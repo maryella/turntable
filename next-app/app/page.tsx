@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { rubik_mono } from "./fonts";
 import { AddBusiness } from "./components/AddBusiness";
+import { AddQueuedParty } from "./components/AddQueuedParty";
 
 export default function Home() {
   return (
@@ -11,6 +12,9 @@ export default function Home() {
         </p>
         <div>
           <AddBusiness />
+        </div>
+        <div>
+          <AddQueuedParty />
         </div>
       </div>
     </main>

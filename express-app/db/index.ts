@@ -1,4 +1,5 @@
 import pg from "pg";
+import { QueuedPartyParameters } from "../../types";
 
 const { Pool } = pg;
 
@@ -18,12 +19,25 @@ export const query = (text, params, callback) => {
 };
 
 export async function addBusiness(input: BusinessInput) {
-  console.log("calladd business");
   const { businessName } = input;
-  const { rows } = pool.query({
-    text: "INSERT INTO businesses(business_name) VALUES($1)",
+
+  const { rows } = await pool.query({
+    text: "INSERT INTO businesses(business_name) VALUES($1) RETURNING business_id;",
     values: [businessName],
   });
+
+  return rows;
+}
+
+export async function addQueuedParty(input: QueuedPartyParameters) {
+  const { businessId, partyName, partySize, phone, status } = input;
+
+  const result = await pool.query({
+    text: "INSERT INTO queued_parties(business_id, party_name, party_size, telephone, status) VALUES($1, $2, $3, $4, $5) RETURNING business_id;",
+    values: [businessId, partyName, partySize, phone, status],
+  });
+
+  const { rows } = result;
 
   return rows;
 }
