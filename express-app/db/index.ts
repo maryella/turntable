@@ -10,6 +10,10 @@ const pool = new Pool({
   database: "turntable",
 });
 
+pool.on("error", (err) => {
+  console.error("something bad has happened!", err.stack);
+});
+
 interface BusinessInput {
   businessName: string;
 }
@@ -21,12 +25,12 @@ export const query = (text, params, callback) => {
 export async function addBusiness(input: BusinessInput) {
   const { businessName } = input;
 
-  const { rows } = await pool.query({
+  const response = await pool.query({
     text: "INSERT INTO businesses(business_name) VALUES($1) RETURNING business_id;",
     values: [businessName],
   });
 
-  return rows;
+  return response;
 }
 
 export async function addQueuedParty(input: QueuedPartyParameters) {
@@ -42,11 +46,20 @@ export async function addQueuedParty(input: QueuedPartyParameters) {
   return rows;
 }
 
-export async function getQueuedParties(id: string) {
-  const { rows } = pool.query({
-    text: "SELECT * FROM queued_parties WHERE business_id = $1",
+export async function getBusiness(id: string) {
+  const { rows } = await pool.query({
+    text: "SELECT * FROM businesses WHERE business_id = $1",
     values: [id],
   });
 
+  return rows[0];
+}
+
+export async function getQueuedParties(id: string) {
+  const { rows } = await pool.query({
+    text: "SELECT * FROM queued_parties WHERE business_id = $1",
+    values: [id],
+  });
+  // console.log("rows", rows);
   return rows;
 }

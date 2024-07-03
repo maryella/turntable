@@ -11,3 +11,18 @@ export interface QueuedPartyParameters {
   status: QueuedStatus;
   businessId: number;
 }
+
+export interface QueueQueryParamaters {
+  businessId: string;
+}
+
+export interface QueuedParty {
+  party_name: string;
+  party_size: number;
+  telephone: string;
+  status: QueuedStatus;
+}
+
+export interface Business {
+  business_name: string;
+}
